@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+
+{% block title %}Klear · 아웃리치{% endblock %}
+
+{% block topbar_title %}<strong>아웃리치</strong> · 인플루언서 협업 관리{% endblock %}
+
+{% block content %}
+<div style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:60vh; color:var(--text-muted);">
+  <div style="width:64px; height:64px; background:var(--surface-2); border-radius:50%; display:flex; align-items:center; justify-content:center; margin-bottom:20px; border:1px solid var(--border);">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+      <circle cx="9" cy="7" r="4"/>
+      <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+      <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+    </svg>
+  </div>
+  <div style="font-size:18px; font-weight:600; color:var(--text-secondary); margin-bottom:8px;">아웃리치</div>
+  <div style="font-size:13.5px; color:var(--text-muted);">인플루언서 발굴 · 제안서 생성 · 이메일 자동화</div>
+  <div style="margin-top:24px; padding:12px 20px; background:var(--klear-green-pale); border:1px solid var(--klear-green-light); border-radius:var(--radius-sm); font-size:12.5px; color:var(--klear-green-dark); font-weight:500;">
+    🚧 개발 예정
+  </div>
+</div>
+{% endblock %}

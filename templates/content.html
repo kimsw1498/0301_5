@@ -1,0 +1,141 @@
+{% extends "layout.html" %}
+
+{% block title %}Klear · 콘텐츠 생성{% endblock %}
+
+{% block topbar_title %}<strong>콘텐츠 생성</strong> · AI 시나리오 & A/B 테스트{% endblock %}
+
+{% block content %}
+<div style="padding: 20px;">
+    <h2>✍️ AI 콘텐츠 생성 (Instagram)</h2>
+    <p style="color: #666; margin-bottom: 30px;">제품 정보와 타겟 고객을 입력하면, 뷰티 전문 AI가 트렌디한 인스타 게시물과 해시태그를 작성해 줍니다.</p>
+
+    <div style="max-width: 800px; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px;">
+        <div style="margin-bottom: 15px;">
+            <label style="font-weight: bold; display: block; margin-bottom: 5px;">📦 제품명 (필수)</label>
+            <input type="text" id="product_name" placeholder="예: 클리어 어성초 수분 진정 크림" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+        </div>
+        
+        <div style="margin-bottom: 15px;">
+            <label style="font-weight: bold; display: block; margin-bottom: 5px;">🎯 타겟 고객 (선택)</label>
+            <input type="text" id="target_audience" placeholder="예: 좁쌀 여드름이 고민인 20대 수부지 피부" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+        </div>
+
+        <div style="margin-bottom: 25px;">
+            <label style="font-weight: bold; display: block; margin-bottom: 5px;">✨ 강조할 소구 포인트 (선택)</label>
+            <input type="text" id="key_point" placeholder="예: 끈적임 없는 텍스처, 화잘먹 치트키, 비건 인증" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+        </div>
+
+        <details style="margin-bottom: 25px; background: #f9f9f9; padding: 15px; border-radius: 5px; border: 1px solid #eee;">
+            <summary style="font-weight: bold; cursor: pointer; color: #555;">⚙️ AI 프롬프트 고급 설정 (클릭해서 열기)</summary>
+            <div style="margin-top: 15px;">
+                <label style="display: block; margin-bottom: 5px; font-size: 13px; color: #666;">AI에게 내릴 핵심 지시사항 (이곳에서 자유롭게 말투나 형식을 수정하세요!)</label>
+                <textarea id="system_prompt" rows="6" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-family: inherit;">당신은 트렌디하고 감각적인 K-뷰티 전문 SNS 콘텐츠 마케터입니다. 사용자가 제공한 제품 정보와 타겟 고객을 바탕으로 매력적인 인스타그램 게시물을 작성해주세요.
+
+아래 3가지 항목을 반드시 포함하여 마크다운 형식으로 작성하세요:
+1. 🎣 [A/B 테스트용 후킹 제목 2가지]: 스크롤을 멈추게 하는 강력한 첫 문장
+2. 📝 [메인 본문]: 이모지를 적절히 사용한 감성적이고 설득력 있는 글 (소구 포인트 자연스럽게 녹이기)
+3. 🏷️ [SEO 최적화 해시태그]: 인스타그램 알고리즘에 유리한 인기/니치 해시태그 5~7개 추천</textarea>
+            </div>
+        </details>
+
+        <button onclick="generateInstaPost()" id="generateBtn" style="background-color: #8fb358; color: white; border: none; padding: 12px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 15px; width: 100%;">
+            ✨ AI 인스타그램 게시물 및 해시태그 생성
+        </button>
+    </div>
+
+    <div id="result_area" style="display: none; max-width: 800px; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-left: 5px solid #E1306C;">
+        <h3 style="margin-top: 0; color: #E1306C;">📱 인스타그램 생성 완료</h3>
+        <pre id="result_text" style="white-space: pre-wrap; font-family: 'Pretendard', sans-serif; line-height: 1.6; background: #f9f9f9; padding: 20px; border-radius: 8px; border: 1px solid #eee; margin-bottom: 20px;"></pre>
+        <button onclick="sendToN8n()" style="background-color: #E1306C; color: white; border: none; padding: 12px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 15px;">
+    📸 인스타그램으로 자동 업로드 (n8n 연동)
+        </button>
+    </div>
+</div>
+
+<script>
+async function generateInstaPost() {
+    const btn = document.getElementById('generateBtn');
+    const resultArea = document.getElementById('result_area');
+    const resultText = document.getElementById('result_text');
+    
+    const product_name = document.getElementById('product_name').value.trim();
+    const target_audience = document.getElementById('target_audience').value.trim();
+    const key_point = document.getElementById('key_point').value.trim();
+    const system_prompt = document.getElementById('system_prompt').value.trim(); // 🚀 화면에서 프롬프트 가져오기
+
+    if(!product_name) { 
+        alert("제품명을 입력해주세요!"); 
+        return; 
+    }
+
+    btn.innerText = "⏳ 뷰티 전문 AI가 열심히 글을 쓰는 중...";
+    btn.disabled = true;
+    btn.style.backgroundColor = "#ccc";
+    resultArea.style.display = "none";
+
+    try {
+        const response = await fetch('/api/generate-content', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                type: 'instagram',
+                product_name: product_name,
+                target_audience: target_audience,
+                key_point: key_point,
+                system_prompt: system_prompt // 🚀 서버로 프롬프트 전송!
+            })
+        });
+
+        const data = await response.json();
+        
+        if(data.success) {
+            resultText.innerText = data.result;
+            resultArea.style.display = "block";
+        } else {
+            alert("오류 발생: " + data.error);
+        }
+    } catch (error) {
+        alert("서버 통신 오류가 발생했습니다.");
+    } finally {
+        btn.innerText = "✨ AI 인스타그램 게시물 및 해시태그 생성";
+        btn.disabled = false;
+        btn.style.backgroundColor = "#8fb358";
+    }
+}
+
+// --- 기존 generateInstaPost 함수 아래에 이어서 붙여넣으세요 ---
+
+async function sendToN8n() {
+    const resultText = document.getElementById('result_text').innerText;
+    const productName = document.getElementById('product_name').value.trim();
+    
+    // ⚠️ 여기에 n8n에서 복사한 'Test URL'을 꼭 붙여넣으세요!
+    const webhookUrl = 'https://kimsw1498.app.n8n.cloud/webhook-test/2cc2d646-fc1a-4a53-9093-26b57ec10dcd'; 
+
+    if(!resultText) {
+        alert("먼저 AI 콘텐츠를 생성해주세요!");
+        return;
+    }
+
+    try {
+        const response = await fetch(webhookUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                product_name: productName,
+                instagram_content: resultText
+            })
+        });
+
+        if(response.ok) {
+            alert("🎉 n8n으로 데이터 전송 성공! n8n 화면을 확인해보세요!");
+        } else {
+            alert("전송 실패 ㅠㅠ n8n 주소가 맞는지 확인해주세요.");
+        }
+    } catch (error) {
+        alert("연결 오류: n8n 서버와 통신할 수 없습니다.");
+    }
+}
+
+</script>
+{% endblock %}

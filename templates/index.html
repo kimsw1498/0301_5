@@ -1,0 +1,278 @@
+{% extends "layout.html" %}
+
+{% block title %}Klear · 대시보드{% endblock %}
+
+{% block topbar_title %}<strong>K-Beauty</strong> Market Intelligence{% endblock %}
+
+{% block content %}
+<div class="content">
+
+  <!-- ── STATS ROW ── -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-label">총 트렌드 탐지</div>
+      <div class="stat-value" id="stat-trends">247</div>
+      <div class="stat-change up">↑ 18.3% 지난 7일 대비</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">활성 인플루언서</div>
+      <div class="stat-value" id="stat-influencers">83</div>
+      <div class="stat-change up">↑ 12명 신규 추가</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">콘텐츠 생성 (이번 달)</div>
+      <div class="stat-value" id="stat-content">136</div>
+      <div class="stat-change up">↑ 34.1% 전월 대비</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">메일 발송 응답률</div>
+      <div class="stat-value" id="stat-response">31<span style="font-size:16px;font-weight:400">%</span></div>
+      <div class="stat-change down">↓ 2.1%p 이전 캠페인 대비</div>
+    </div>
+  </div>
+
+  <!-- ── MODULE GRID ── -->
+  <div class="module-grid">
+
+    <!-- MODULE 1: INTELLIGENCE -->
+    <div class="module-card">
+      <div class="module-header">
+        <div style="display:flex; gap:11px; align-items:flex-start;">
+          <div class="module-icon-wrap">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          </div>
+          <div>
+            <div class="module-title">인텔리전스</div>
+            <div class="module-subtitle">실시간 미국 시장 트렌드 · SNS 이슈 탐지</div>
+          </div>
+        </div>
+        <span class="module-tag tag-green">실시간</span>
+      </div>
+      <div class="module-body">
+        <div class="chart-placeholder" id="intelligence-chart">
+          <div class="sparkbar-row" id="trend-bars">
+            <div class="sparkbar" style="height:30%"></div>
+            <div class="sparkbar" style="height:45%"></div>
+            <div class="sparkbar" style="height:38%"></div>
+            <div class="sparkbar" style="height:55%"></div>
+            <div class="sparkbar" style="height:72%"></div>
+            <div class="sparkbar" style="height:60%"></div>
+            <div class="sparkbar highlight" style="height:88%"></div>
+          </div>
+          <div class="chart-label">7일 트렌드 언급량 추이 (Reddit + TikTok + Instagram)</div>
+        </div>
+        <div class="trend-list" id="trend-list">
+          <div class="trend-item"><span class="trend-rank">01</span><span class="trend-keyword">Snail Mucin Routine</span><span class="trend-source">Reddit</span><span class="trend-vol">↑28k</span></div>
+          <div class="trend-item"><span class="trend-rank">02</span><span class="trend-keyword">Glass Skin Tutorial</span><span class="trend-source">TikTok</span><span class="trend-vol">↑19k</span></div>
+          <div class="trend-item"><span class="trend-rank">03</span><span class="trend-keyword">COSRX vs Klear compare</span><span class="trend-source">Instagram</span><span class="trend-vol">↑7.4k</span></div>
+        </div>
+      </div>
+      <div class="module-footer">
+        <a class="footer-link" href="{{ url_for('intelligence') }}">전체 트렌드 보기 →</a>
+        <span class="footer-timestamp" id="intel-updated">Updated: --:-- KST</span>
+      </div>
+    </div>
+
+    <!-- MODULE 2: OUTREACH -->
+    <div class="module-card">
+      <div class="module-header">
+        <div style="display:flex; gap:11px; align-items:flex-start;">
+          <div class="module-icon-wrap">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          </div>
+          <div>
+            <div class="module-title">아웃리치</div>
+            <div class="module-subtitle">인플루언서 협업 · 메일 자동화 상태</div>
+          </div>
+        </div>
+        <span class="module-tag tag-blue">자동화</span>
+      </div>
+      <div class="module-body">
+        <div style="margin-bottom:14px;">
+          <div class="progress-row">
+            <div class="progress-header"><span class="progress-label">메일 발송 완료</span><span class="progress-value" id="mail-sent">67 / 100</span></div>
+            <div class="progress-track"><div class="progress-fill" id="mail-sent-bar" style="width:67%"></div></div>
+          </div>
+          <div class="progress-row">
+            <div class="progress-header"><span class="progress-label">오픈율</span><span class="progress-value" id="open-rate">44%</span></div>
+            <div class="progress-track"><div class="progress-fill" id="open-rate-bar" style="width:44%; background:#5b8ed6;"></div></div>
+          </div>
+          <div class="progress-row">
+            <div class="progress-header"><span class="progress-label">긍정 회신</span><span class="progress-value" id="reply-rate">21%</span></div>
+            <div class="progress-track"><div class="progress-fill" id="reply-rate-bar" style="width:21%; background:#4caf77;"></div></div>
+          </div>
+        </div>
+        <div class="influencer-list" id="influencer-list">
+          <div class="influencer-item"><div class="infl-avatar" style="background:#fff0f0; color:#d44;">SR</div><div style="flex:1;"><div class="infl-name">@skincarebyrose</div><div class="infl-meta">234K · Beauty</div></div><span class="infl-status status-open">열람</span></div>
+          <div class="influencer-item"><div class="infl-avatar" style="background:#f0f5ff; color:#36d;">JL</div><div style="flex:1;"><div class="infl-name">@jenloves_kbeauty</div><div class="infl-meta">89K · Lifestyle</div></div><span class="infl-status status-replied">회신 ✓</span></div>
+          <div class="influencer-item"><div class="infl-avatar" style="background:#f5fff0; color:#3a8;">MT</div><div style="flex:1;"><div class="infl-name">@makeupwithmia</div><div class="infl-meta">1.2M · Makeup</div></div><span class="infl-status status-pending">대기중</span></div>
+        </div>
+      </div>
+      <div class="module-footer">
+        <a class="footer-link" href="{{ url_for('outreach') }}">전체 인플루언서 보기 →</a>
+        <span class="footer-timestamp" id="outreach-updated">Sync: --:-- KST</span>
+      </div>
+    </div>
+
+    <!-- MODULE 3: CONTENT -->
+    <div class="module-card">
+      <div class="module-header">
+        <div style="display:flex; gap:11px; align-items:flex-start;">
+          <div class="module-icon-wrap">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          </div>
+          <div>
+            <div class="module-title">콘텐츠 생성</div>
+            <div class="module-subtitle">AI 시나리오 · A/B 테스트 결과</div>
+          </div>
+        </div>
+        <span class="module-tag tag-orange">AI 생성</span>
+      </div>
+      <div class="module-body">
+        <div class="ab-row" id="ab-test">
+          <div class="ab-variant">
+            <div class="ab-label">Variant A</div>
+            <div class="ab-headline">"피부 장벽을 되살리는 클리어 루틴"</div>
+            <div class="ab-metric" id="ab-a-ctr">3.2%</div>
+            <div class="ab-metric-label">CTR</div>
+          </div>
+          <div class="ab-variant winner">
+            <div class="ab-label">Variant B</div>
+            <div class="ab-headline">"3일 만에 달라진 결: Klear 후기"</div>
+            <div class="ab-metric" id="ab-b-ctr">5.8%</div>
+            <div class="ab-metric-label">CTR</div>
+            <div class="winner-badge">WINNER</div>
+          </div>
+        </div>
+        <div id="scenario-list">
+          <div class="scenario-item"><div class="scenario-platform platform-insta" style="color:white; font-size:13px;">📸</div><span class="scenario-title">유리 피부 연출 GRWM — 15초 릴스</span><span class="scenario-score">92pt</span></div>
+          <div class="scenario-item"><div class="scenario-platform platform-tiktok" style="color:white; font-size:13px;">▶</div><span class="scenario-title">Before/After 세럼 챌린지 포맷</span><span class="scenario-score">88pt</span></div>
+          <div class="scenario-item"><div class="scenario-platform platform-yt" style="color:white; font-size:13px;">▷</div><span class="scenario-title">K-Beauty 루틴 풀영상 (3분 쇼츠)</span><span class="scenario-score">79pt</span></div>
+        </div>
+      </div>
+      <div class="module-footer">
+        <a class="footer-link" href="{{ url_for('content') }}">콘텐츠 전체 보기 →</a>
+        <span class="footer-timestamp" id="content-updated">Generated: --:-- KST</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── WIDE PANEL ── -->
+  <div class="module-wide">
+    <div class="wide-header">
+      <div>
+        <div style="font-size:13.5px; font-weight:600;">키워드 인텔리전스 요약</div>
+        <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">Reddit · TikTok · Instagram 실시간 집계</div>
+      </div>
+      <button class="btn btn-ghost" style="font-size:12px;">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        CSV 내보내기
+      </button>
+    </div>
+    <div class="wide-body">
+      <div class="wide-col">
+        <div class="wide-col-title">🔥 핫 키워드</div>
+        <div class="keyword-cloud" id="kw-hot">
+          <span class="kw-pill kw-hot">Snail Mucin</span><span class="kw-pill kw-hot">Glass Skin</span>
+          <span class="kw-pill kw-hot">Centella</span><span class="kw-pill kw-hot">Double Cleanse</span>
+          <span class="kw-pill kw-hot">K-Beauty Haul</span><span class="kw-pill kw-hot">COSRX</span>
+          <span class="kw-pill kw-hot">Skin Barrier</span>
+        </div>
+      </div>
+      <div class="wide-col">
+        <div class="wide-col-title">📈 급상승 키워드</div>
+        <div class="keyword-cloud" id="kw-rising">
+          <span class="kw-pill kw-rising">Klear Serum</span><span class="kw-pill kw-rising">Bio-Wellness</span>
+          <span class="kw-pill kw-rising">Ceramide Cream</span><span class="kw-pill kw-rising">Peptide Ampoule</span>
+          <span class="kw-pill kw-rising">Fermented Essence</span><span class="kw-pill kw-rising">Hydrogel Patch</span>
+        </div>
+      </div>
+      <div class="wide-col">
+        <div class="wide-col-title">📊 플랫폼별 언급 비중</div>
+        <div id="platform-stats">
+          <div class="progress-row"><div class="progress-header"><span class="progress-label">TikTok</span><span class="progress-value">48%</span></div><div class="progress-track"><div class="progress-fill" style="width:48%; background:#010101;"></div></div></div>
+          <div class="progress-row"><div class="progress-header"><span class="progress-label">Instagram</span><span class="progress-value">31%</span></div><div class="progress-track"><div class="progress-fill" style="width:31%; background: linear-gradient(90deg, #f09433, #dc2743);"></div></div></div>
+          <div class="progress-row"><div class="progress-header"><span class="progress-label">Reddit</span><span class="progress-value">21%</span></div><div class="progress-track"><div class="progress-fill" style="width:21%; background:#ff4500;"></div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  async function loadPageData() {
+    try {
+      const res = await fetch('/api/all');
+      const { intelligence: intel, outreach, content } = await res.json();
+
+      document.getElementById('stat-trends').textContent = intel.trend_count;
+      document.getElementById('intel-updated').textContent = 'Updated: ' + intel.updated_at;
+
+      document.getElementById('trend-list').innerHTML = intel.trends.map((t, i) => `
+        <div class="trend-item">
+          <span class="trend-rank">${String(i+1).padStart(2,'0')}</span>
+          <span class="trend-keyword">${t.keyword}</span>
+          <span class="trend-source">${t.source}</span>
+          <span class="trend-vol">↑${t.volume}</span>
+        </div>`).join('');
+
+      document.getElementById('kw-hot').innerHTML = intel.hot_keywords.map(k => `<span class="kw-pill kw-hot">${k}</span>`).join('');
+      document.getElementById('kw-rising').innerHTML = intel.rising_keywords.map(k => `<span class="kw-pill kw-rising">${k}</span>`).join('');
+
+      const bars = document.getElementById('trend-bars');
+      bars.innerHTML = intel.sparkline_7d.map((v, i, arr) =>
+        `<div class="sparkbar ${i === arr.length-1 ? 'highlight' : ''}" style="height:${v}%"></div>`
+      ).join('');
+
+      const ps = intel.platform_stats;
+      const platformColors = { TikTok:'#010101', Instagram:'linear-gradient(90deg,#f09433,#dc2743)', Reddit:'#ff4500' };
+      document.getElementById('platform-stats').innerHTML = Object.entries(ps).map(([name, val]) => `
+        <div class="progress-row">
+          <div class="progress-header"><span class="progress-label">${name}</span><span class="progress-value">${val}%</span></div>
+          <div class="progress-track"><div class="progress-fill" style="width:${val}%; background:${platformColors[name]||'var(--klear-green)'};"></div></div>
+        </div>`).join('');
+
+      document.getElementById('stat-influencers').textContent = outreach.active_influencers;
+      document.getElementById('stat-response').innerHTML = outreach.response_rate + '<span style="font-size:16px;font-weight:400">%</span>';
+      document.getElementById('mail-sent').textContent = `${outreach.mail_sent} / ${outreach.mail_total}`;
+      document.getElementById('mail-sent-bar').style.width = `${(outreach.mail_sent/outreach.mail_total*100).toFixed(0)}%`;
+      document.getElementById('open-rate').textContent = outreach.open_rate + '%';
+      document.getElementById('open-rate-bar').style.width = outreach.open_rate + '%';
+      document.getElementById('reply-rate').textContent = outreach.reply_rate + '%';
+      document.getElementById('reply-rate-bar').style.width = outreach.reply_rate + '%';
+      document.getElementById('outreach-updated').textContent = 'Sync: ' + outreach.updated_at;
+
+      const statusClass = { open:'status-open', replied:'status-replied', pending:'status-pending', sent:'status-sent' };
+      const avatarColors = ['background:#fff0f0;color:#d44','background:#f0f5ff;color:#36d','background:#f5fff0;color:#3a8','background:#fff8f0;color:#c84'];
+      document.getElementById('influencer-list').innerHTML = outreach.influencers.map((inf, i) => `
+        <div class="influencer-item">
+          <div class="infl-avatar" style="${avatarColors[i % avatarColors.length]}">${inf.initials}</div>
+          <div style="flex:1;"><div class="infl-name">${inf.name}</div><div class="infl-meta">${inf.followers} · ${inf.category}</div></div>
+          <span class="infl-status ${statusClass[inf.status]||'status-sent'}">${inf.status_label}</span>
+        </div>`).join('');
+
+      document.getElementById('stat-content').textContent = content.content_count;
+      document.getElementById('content-updated').textContent = 'Generated: ' + content.updated_at;
+      document.getElementById('ab-a-ctr').textContent = content.ab_test.variant_a.ctr + '%';
+      document.getElementById('ab-b-ctr').textContent = content.ab_test.variant_b.ctr + '%';
+
+      const platformStyle = { instagram:'background:linear-gradient(135deg,#f09433,#dc2743,#bc1888)', tiktok:'background:#010101', youtube:'background:#ff0000' };
+      document.getElementById('scenario-list').innerHTML = content.scenarios.map(s => `
+        <div class="scenario-item">
+          <div class="scenario-platform" style="${platformStyle[s.platform]||'background:#ccc'};color:white;font-size:13px;border-radius:6px;width:24px;height:24px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">${s.icon}</div>
+          <span class="scenario-title">${s.title}</span>
+          <span class="scenario-score">${s.score}pt</span>
+        </div>`).join('');
+
+    } catch(e) {
+      console.warn('API 연결 실패 — 샘플 데이터 표시 중:', e.message);
+    }
+  }
+
+  loadPageData();
+  setInterval(loadPageData, 5 * 60 * 1000);
+</script>
+{% endblock %}
