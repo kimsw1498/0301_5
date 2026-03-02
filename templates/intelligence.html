@@ -7,12 +7,12 @@
 {% block content %}
 <div class="intel-page-wrap">
 
-  <div class="intel-page-header" style="display:flex; align-items:center; gap:16px; flex-wrap:wrap;">
+  <div class="intel-page-header" style="display:flex; align-items:center; gap:16px; flex-wrap:wrap; margin-bottom:8px;">
     <div class="intel-page-title" style="margin:0;">🔍 인텔리전스 분석</div>
-    <div class="intel-tabs" style="margin:0;">
-      <button class="intel-tab-btn active" onclick="switchIntelTab('market-entry-tab', this)">국가별 진입 전략</button>
-      <button class="intel-tab-btn" onclick="switchIntelTab('trend-tab', this)">트렌드 키워드</button>
-    </div>
+  </div>
+  <div class="intel-tabs" style="margin-bottom:20px; width:fit-content;">
+    <button class="intel-tab-btn active" onclick="switchIntelTab('market-entry-tab', this)">국가별 진입 전략</button>
+    <button class="intel-tab-btn" onclick="switchIntelTab('trend-tab', this)">뷰티 트렌드 키워드</button>
   </div>
 
   <!-- ── 탭 1: 국가별 진입 전략 ── -->
@@ -53,7 +53,7 @@
             분석 결과
             <span id="result-tag" class="result-tag" style="display:none"></span>
           </div>
-          <span class="result-meta" id="result-meta">분석 전</span>
+          <span class="result-meta" id="result-meta" style="display:none;">분석 전</span>
         </div>
         <div class="result-body" id="result-body">
           <div class="result-empty">
@@ -76,7 +76,7 @@
       <div class="entry-input-card">
         <h3>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-          트렌드 분석 조건
+          분석 조건 설정
         </h3>
         <div class="entry-field">
           <label>플랫폼</label>
@@ -198,7 +198,7 @@
           body.innerHTML = `
             <div class="spinner-wrap">
               <div class="spinner"></div>
-              <div>GPT-4 Turbo로 선택 항목 분석 중</div>
+              <div>AI가 선택 항목을 분석하고 있습니다...</div>
               <div class="spinner-step">[ ${selectedCategories.join(' → ')} ]</div>
             </div>`;
         }
@@ -220,7 +220,7 @@
 
       tag.className = 'result-tag tag-done';
       tag.textContent = '✅ 분석 완료';
-      meta.textContent = data.analyzed_at + ' · GPT-4 Turbo';
+      // meta hidden
 
       const debug = data.debug || {};
       const sources = debug.search_sources || data.search_results || [];
