@@ -427,7 +427,7 @@ def api_generate_content():
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt}
             ],
-            temperature=0.7,
+            temperature=0.7,      # Z세대 타겟의 SNS 콘텐츠 생성을 위해, AI의 창의성과 바이럴 요소를 극대화하도록 온도를 0.7로 상향 조정
             max_tokens=1000
         )
 
@@ -524,7 +524,7 @@ def api_trend_reddit():
         res = ai_client.chat.completions.create(
             model='gpt-4o-mini',
             messages=[{'role': 'user', 'content': prompt}],
-            temperature=0.3,
+            temperature=0.3,         # 할루시네이션(환각)을 완벽 차단하고, 수집된 데이터 기반의 '객관적이고 보수적인 마케팅 리포트'를 도출하기 위해 온도 하향 조정
             max_tokens=1000,
         )
 
