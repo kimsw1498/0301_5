@@ -317,8 +317,9 @@ def api_market_entry():
             f"[분석 제외 항목]: {excluded} — 이 항목은 절대 언급하지 마세요.\n\n"
             "데이터 처리 원칙:\n"
             "  - 아래 제공된 실시간 검색 데이터만을 근거로 분석하세요.\n"
-            "  - 검색 데이터에 없는 내용은 반드시 '정보 없음' 또는 '추가 확인 필요'로 표기하세요.\n"
-            "  - 없는 사실을 절대 지어내지 마세요 (할루시네이션 금지).\n"
+            "  - 🚨 부정적 표현 금지: 검색 데이터에 직접적인 내용이 부족하더라도 '정보 없음', '유감스럽게도', '분석 불가' 같은 표현은 절대 쓰지 마세요.\n"
+            "  - 전문가적 추론 및 검토 권장: 직접적인 정보가 없다면 시장 성장률 등 주변 데이터로 유추하여 작성하되, 해당 문장 끝에 '이 부분은 실무적인 추가 확인이 권장됩니다'라고 덧붙이세요.\n"
+            "  - 🚨 할루시네이션(없는 사실 지어내기) 금지: 데이터에 없는 내용을 절대 무에서 유로 창조하지 마세요.\n"
             "  - 답변은 마크다운 형식(## 헤딩, - 리스트, **볼드**)으로 작성하세요.\n"
             "  - 검색 데이터를 근거로 서술할 때는 반드시 해당 출처 번호를 [1], [2] 형태로 문장 끝에 표기하세요.\n"
             "  - 각주 번호는 아래 검색 데이터의 [SOURCE 번호]와 일치해야 합니다."
@@ -352,7 +353,7 @@ def api_market_entry():
                         {"role": "user",   "content": user_prompt},
                     ],
                     temperature=0.3,
-                    max_tokens=1800,
+                    max_tokens=2500,
                 )
                 analysis_text = res.choices[0].message.content
             except Exception as e:
@@ -494,36 +495,28 @@ def api_trend_reddit():
         ai_client = OpenAI(api_key=OPENAI_API_KEY)
 
         prompt = (
-            "너는 K-뷰티 및 글로벌 스킨케어 시장 트렌드를 분석하는 수석 데이터 애널리스트이자 마케팅 전략가야.\n"
-            "다음은 레딧(Reddit)의 'r/AsianBeauty'와 'r/SkincareAddiction' 두 커뮤니티에서 실시간으로 수집된 유저들의 날것(Raw) 게시글 데이터야.\n\n"
+            "너는 미국 현지 스킨케어 시장을 분석하는 수석 데이터 애널리스트야.\n"
+            "레딧(Reddit)의 'r/AsianBeauty'와 'r/SkincareAddiction'에서 수집된 미국 유저들의 스킨케어/선케어 게시글 데이터야.\n\n"
             "[게시글 데이터]\n"
             + combined_text +
             "\n[수행 작업 및 분석 가이드라인]\n"
-            "제공된 두 커뮤니티 데이터를 통합 심층 분석하여, 현재 유저들이 가장 열광하거나 고민하고 있는 **핵심 뷰티 트렌드 키워드 TOP 10**를 도출해.\n"
-            "두 커뮤니티에서 공통적으로 또는 반복적으로 언급되는 키워드를 우선적으로 선정해.\n"
-            "단, 다음의 깐깐한 규칙을 무조건 엄수해서 분석해야 해.\n\n"
-            "1. 절대적 객관성 유지 (할루시네이션 금지):\n"
-            "   - 내가 특정 예시(정답)를 주지 않더라도, 오직 '제공된 텍스트' 내에서만 언급 빈도수가 높고 문맥상 중요도가 큰 단어를 스스로 추출할 것.\n"
-            "   - 데이터에 없는 트렌드를 지어내거나 너의 사전 지식을 섞지 말 것.\n\n"
-            "2. 키워드 그룹핑 (의미망 분석):\n"
-            "   - 비슷한 의미를 가진 단어들(예: Sunscreen, SPF, Sunblock / Hydration, Moisturizing 등)은 문맥을 파악하여 하나의 가장 대표적인 키워드로 통합하여 순위를 매길 것.\n\n"
-            "3. 마케터 관점의 다각화 도출:\n"
-            "   - Skin, Face, Good 같은 뻔하고 광범위한 단어는 무조건 배제할 것.\n"
-            "   - 마케팅 전략(특히 선세럼 등 신제품 기획)에 즉시 활용할 수 있도록 특정 성분명, 제형/발림성(예: White cast, Sticky), 명확한 피부 고민 등 구체적이고 엣지 있는 키워드를 발굴할 것.\n\n"
-            "4. 🚨 배제 대상 (Negative Filter) 필수 적용:\n"
-            "   - Shipping(배송), Customs/Fees/Tariff(관세/통관/수수료), Customer Service(고객센터), Delivery(택배), Website(쇼핑몰 오류) 등 "
-            "**제품의 본질(성분, 효능, 텍스처)과 무관한 물류, 구매 과정, CS 관련 키워드는 무조건 제외**할 것.\n"
-            "   - 오직 '스킨케어/뷰티 제품 자체'와 '피부 고민'에 집중할 것.\n\n"
+            "우리는 미국 시장에 '백탁 없는 K-뷰티 선세럼(Sun Serum)'을 런칭할 계획이야. **미국 소비자들의 핵심 스킨케어/선케어 트렌드 키워드 TOP 10**을 도출해.\n\n"
+            "1. 절대적 객관성 유지 (할루시네이션 금지): 오직 '제공된 텍스트' 내에서만 추출할 것.\n\n"
+            "2. 페인포인트 발굴: White cast(백탁), Pilling(화장 밀림), Greasy(기름짐) 등 기존 선크림에 대한 불만을 우선적으로 찾아낼 것.\n\n"
+            "3. 니즈 발굴: Lightweight, Hydrating, Glass skin 등 가벼운 제형과 광채 피부에 대한 열망을 찾아낼 것.\n\n"
+            "4. 키워드 그룹핑: SPF/Sunscreen/Sunblock 등 유사어는 대표 하나로 통합할 것.\n\n"
+            "5. 🚨 배제 대상: 물류(Shipping, Customs), 쇼핑몰 관련, 메이크업(색조) 관련 단어는 무조건 제외할 것.\n\n"
+            "6. 🚨 뻔한 단어 배제: 'Sunscreen', 'SPF', 'Sunblock' 등 자외선 차단제 단어 자체는 키워드 선정에서 아예 제외하고, 그로 인한 구체적인 피부 변화(효과/불만)나 특정 성분명에만 집중할 것.\n\n"
             "[출력 형식]\n"
             "- 마크다운 기호 없이 오직 순수한 JSON 배열만 출력할 것.\n"
             "- 반드시 mentions 값 기준 내림차순으로 정렬해서 출력할 것.\n"
-            "- 🚨 중요: 글로벌 마케팅 활용을 위해 'keyword'는 원문에서 추출한 **정확한 영어 명사/형용사**로 유지하고, "
-            "'summary' 내용은 우리 마케팅 팀원들이 읽기 편하게 **자연스러운 한국어로 상세하게(2~3줄)** 요약할 것.\n\n"
+            "- 🚨 모든 'keyword'는 반드시 소문자(lowercase)로 통일해서 출력할 것.\n"
+            "- 'summary'는 이 키워드가 선세럼 마케팅에 왜 중요한지 **존댓말(합쇼체)**로 한국어 2~3줄 분석.\n\n"
             '[\n'
             '  {{\n'
-            '    "keyword": "영어 키워드명 (예: White cast)",\n'
+            '    "keyword": "white cast",\n'
             '    "mentions": 3,\n'
-            '    "summary": "유저들이 이 키워드와 관련하여 구체적으로 어떤 불편함을 겪고 있는지, 혹은 어떤 효과에 열광하고 있는지 한국어로 상세히 분석한 요약"\n'
+            '    "summary": "한국어 요약 분석 (반드시 존댓말/합쇼체로 작성)"\n'
             '  }}\n'
             ']'
         )
@@ -576,9 +569,9 @@ def api_trend_youtube():
         client = ApifyClient(APIFY_TOKEN)
 
         keyword_list = [
-            "Viral Korean glass skin routine",        # 유리 피부 - 가장 바이럴
-            "Korean sunscreen vs American sunscreen", # 선케어 - 직접적 경쟁 비교
-            "Korean skincare for dry winter",         # 계절성 + 피부고민 - 구체적
+            "Best skincare routine 2026",
+            "Morning skincare for glowing skin",
+            "Skincare steps for healthy skin",
         ]
 
         all_items = []
@@ -615,25 +608,27 @@ def api_trend_youtube():
         ai_client = OpenAI(api_key=OPENAI_API_KEY)
 
         prompt = (
-            "너는 K-뷰티 및 글로벌 스킨케어 시장 트렌드를 분석하는 수석 데이터 애널리스트이자 마케팅 전략가야.\n"
-            "다음은 글로벌 유튜브(YouTube)에서 미국 현지 유저들을 타겟으로 한 뷰티 영상들의 제목과 더보기란(설명) 데이터야.\n\n"
+            "너는 미국 현지 스킨케어 트렌드를 분석하는 수석 애널리스트야.\n"
+            "미국 뷰티 유튜브 영상들의 제목과 더보기란 데이터야.\n\n"
             "[게시글 데이터]\n"
             + combined_text +
             "\n[수행 작업 및 분석 가이드라인]\n"
-            "제공된 데이터를 심층 분석하여, 현재 글로벌 유저들이 가장 열광하거나 주목하고 있는 **핵심 뷰티 트렌드 키워드 TOP 10**을 도출해.\n\n"
-            "1. 절대적 객관성 유지 (할루시네이션 금지): 오직 '제공된 텍스트' 내에서만 빈도수가 높고 중요한 단어를 추출할 것.\n"
-            "2. 키워드 그룹핑: 비슷한 의미(예: Sunscreen, SPF / Hydration, Moisturizing)는 문맥을 파악해 하나의 대표 키워드로 통합할 것.\n"
-            "3. 마케터 관점 도출: Skin, Routine, Video 같은 뻔한 단어는 배제하고, 특정 성분, 제형, 피부 고민, 특정 제품군 등 구체적이고 엣지 있는 키워드를 발굴할 것.\n"
-            "4. 🚨 배제 대상 (Negative Filter): Link, Subscribe, Channel, Discount code, Amazon, Sephora 등 뷰티 본질과 무관한 유튜브 홍보/링크/구매/플랫폼 관련 키워드는 무조건 제외할 것.\n\n"
+            "우리는 미국 시장에 '가볍고 백탁 없는 선세럼'을 런칭할 계획이야. **미국 소비자들의 핵심 스킨케어/선케어 트렌드 키워드 TOP 10**을 도출해.\n\n"
+            "1. 절대적 객관성 유지 (할루시네이션 금지): 오직 '제공된 텍스트' 내에서만 추출할 것.\n\n"
+            "2. 기존 선크림의 한계(백탁, 밀림)와 원하는 피부 표현(Glass skin, 윤광)에 관련된 구체적인 키워드를 추출할 것.\n\n"
+            "3. 키워드 그룹핑: SPF/Sunscreen/Sunblock 등 유사어는 대표 하나로 통합할 것.\n\n"
+            "4. 🚨 배제 대상: Link, Subscribe, Amazon, Discount code 등 홍보 관련 키워드와 Makeup 등 색조 관련 키워드는 무조건 제외할 것.\n\n"
+            "5. 🚨 뻔한 단어 배제: 'Sunscreen', 'SPF', 'Sunblock' 등 자외선 차단제 단어 자체는 키워드 선정에서 아예 제외하고, 그로 인한 구체적인 피부 변화(효과/불만)나 특정 성분명에만 집중할 것.\n\n"
             "[출력 형식]\n"
             "- 마크다운 기호 없이 오직 순수한 JSON 배열만 출력할 것.\n"
             "- 반드시 mentions 값 기준 내림차순으로 정렬해서 출력할 것.\n"
-            "- 🚨 중요: 'keyword'는 원문에서 추출한 정확한 영어 명사/형용사로 유지하고, 'summary'는 자연스러운 한국어로 상세하게(2~3줄) 요약할 것.\n\n"
+            "- 🚨 모든 'keyword'는 반드시 소문자(lowercase)로 통일해서 출력할 것.\n"
+            "- 'summary'는 이 키워드가 선세럼 마케팅에 왜 중요한지 **존댓말(합쇼체)**로 한국어 2~3줄 분석.\n\n"
             "[\n"
             "  {{\n"
-            "    \"keyword\": \"영어 키워드명\",\n"
+            "    \"keyword\": \"lightweight texture\",\n"
             "    \"mentions\": 3,\n"
-            "    \"summary\": \"한국어 요약\"\n"
+            "    \"summary\": \"한국어 요약 (반드시 존댓말/합쇼체로 작성)\"\n"
             "  }}\n"
             "]"
         )
@@ -669,8 +664,10 @@ def api_trend_youtube():
 # ═══════════════════════════════════════════════════════════════════════════
 
 EXCLUDED_TAGS = [
-    # Apify 검색 미끼 태그
+    # Apify 검색 미끼 태그 (수집용으로만 쓰고 결과엔 노출 안 함)
     'sephorahaul', 'targetbeauty', 'ultabeauty',
+    'skincareroutine', 'skincaretips', 'glowingskin', 'healthyskin',
+    'sunscreen', 'spf',  # 수집 시드 — 결과엔 뻔해서 제외
     # 범용 뷰티 태그 (너무 넓어서 마케팅 가치 없음)
     'beauty', 'skincare', 'makeup', 'cosmetics',
     # TikTok 알고리즘 태그 (트렌드와 무관)
@@ -678,7 +675,7 @@ EXCLUDED_TAGS = [
 ]
 
 PLATFORM_PROMPTS = {
-    'TikTok': """너는 Z세대를 타겟으로 한 숏폼 뷰티 바이럴 마케터이자 트렌드 애널리스트야.
+    'TikTok': """너는 미국 Z세대를 타겟으로 한 스킨케어 및 뷰티 트렌드 애널리스트야.
 다음은 미국 TikTok 뷰티 영상에서 실시간으로 수집된 해시태그 빈도 데이터와 영상 캡션이야.
 
 [해시태그 빈도 데이터]
@@ -688,35 +685,34 @@ PLATFORM_PROMPTS = {
 {sample_txt}
 
 [수행 작업 및 분석 가이드라인]
-제공된 데이터를 심층 분석하여, 현재 미국 TikTok에서 Z세대가 가장 열광하는 **핵심 뷰티 트렌드 키워드 TOP {limit}**을 도출해.
-단, 다음의 깐깐한 규칙을 무조건 엄수해.
+우리의 핵심 목표는 미국 시장에 '백탁 없고 촉촉한 K-뷰티 선세럼(Sun Serum)'을 런칭하는 거야.
+데이터를 심층 분석하여 현재 Z세대가 열광하는 **스킨케어/선케어 핵심 트렌드 키워드 TOP {limit}**을 도출해.
 
-1. 절대적 객관성 유지 (할루시네이션 금지):
-   - 오직 '제공된 데이터' 내에서만 빈도수가 높고 문맥상 중요도가 큰 키워드를 추출할 것.
-   - 데이터에 없는 트렌드를 지어내거나 사전 지식을 섞지 말 것.
+1. 타겟팅 최우선 순위 (Pain points & Desires):
+   - 기존 자외선 차단제의 불만: White cast(백탁), Pilling(밀림), Sticky(끈적임), Heavy(무거움)
+   - 선호하는 피부 표현 및 제형: Glass skin(유리알 광채), Glowing, Hydrating, Lightweight
 
-2. 키워드 그룹핑 (의미망 분석):
-   - 비슷한 의미의 단어(예: Sunscreen/SPF/Sunblock)는 가장 대표적인 하나로 통합할 것.
-
-3. TikTok 특화 분석 관점:
-   - 즉각적인 시각적 효과(Before/After), 챌린지 포맷, 가성비, 빠른 변화를 보여주는 키워드에 집중할 것.
-   - '#GRWM', '#SkincareTok', 특정 성분 챌린지 등 TikTok에서만 바이럴되는 숏폼 포맷 키워드를 발굴할 것.
-   - skin/face/good 같은 범용 단어는 무조건 배제할 것.
+2. 🚨 배제 대상 (Negative Filter) 필수 적용:
+   - Makeup, Fenty, Lip, Eyeshadow 등 색조 화장품 키워드 무조건 제외.
+   - Shipping, Haul, Sephora, Target 등 유통/구매 관련 단어 배제.
+   - Skin, Face, Beauty 같은 뻔한 범용 단어 배제.
+   - 🚨 뻔한 단어 배제: 'Sunscreen', 'SPF', 'Sunblock' 등 자외선 차단제 단어 자체는 키워드 선정에서 아예 제외하고, 그로 인한 구체적인 피부 변화(효과/불만)나 특정 성분명에만 집중할 것.
 
 [출력 형식]
-- 마크다운 기호 없이 오직 순수한 JSON 배열만 출력할 것.
-- 'keyword'는 원문 영어 그대로, 'summary'는 한국어로 2~3줄 상세 분석.
+- 마크다운 없이 순수 JSON 배열만 출력.
+- 🚨 모든 'keyword'는 반드시 소문자(lowercase)로 통일해서 출력할 것.
+- 'summary'는 이 키워드가 선세럼 마케팅에 왜 중요한지 **존댓말(합쇼체)**로 한국어 2~3줄 분석.
 
 [
   {{
-    "keyword": "영어 키워드명",
+    "keyword": "white cast",
     "mentions": 카운트숫자,
-    "summary": "이 키워드가 TikTok Z세대 사이에서 왜 핫한지, 숏폼 바이럴 마케팅 관점의 시사점을 한국어 2~3줄로 분석"
+    "summary": "한국어 요약 분석 (반드시 존댓말/합쇼체로 작성)"
   }}
 ]""",
 
-    'Instagram': """너는 밀레니얼/Z세대를 타겟으로 한 비주얼 및 인플루언서 마케팅 전문가이자 K-뷰티 트렌드 애널리스트야.
-다음은 미국 Instagram 뷰티 게시물에서 실시간으로 수집된 해시태그 빈도 데이터와 캡션이야.
+    'Instagram': """너는 미국 밀레니얼/Z세대를 타겟으로 한 스킨케어 트렌드 애널리스트야.
+다음은 미국 Instagram 게시물에서 수집된 해시태그 데이터와 캡션이야.
 
 [해시태그 빈도 데이터]
 {tags_str}
@@ -725,29 +721,29 @@ PLATFORM_PROMPTS = {
 {sample_txt}
 
 [수행 작업 및 분석 가이드라인]
-제공된 데이터를 심층 분석하여, 현재 미국 Instagram에서 가장 영향력 있는 **핵심 뷰티 트렌드 키워드 TOP {limit}**을 도출해.
-단, 다음의 깐깐한 규칙을 무조건 엄수해.
+우리의 핵심 목표는 미국 시장에 '백탁 없고 광채를 주는 선세럼(Sun Serum)'을 런칭하는 거야.
+데이터를 심층 분석하여 현재 유저들이 주목하는 **스킨케어/선케어 트렌드 키워드 TOP {limit}**을 도출해.
 
-1. 절대적 객관성 유지 (할루시네이션 금지):
-   - 오직 '제공된 데이터' 내에서만 빈도수가 높고 문맥상 중요도가 큰 키워드를 추출할 것.
+1. 타겟팅 최우선 순위:
+   - 기존 선크림의 한계(백탁, 화장 밀림 등)와 이를 대체할 가벼운 제형(Lightweight, Serum-like).
+   - 인스타그래머블한 피부 표현: Glass skin, Dewy finish, Glowing skin.
 
-2. 키워드 그룹핑 (의미망 분석):
-   - 비슷한 의미의 단어(예: GlassSkin/GlowySkin/DewySkin)는 가장 대표적인 하나로 통합할 것.
-
-3. Instagram 특화 분석 관점:
-   - 라이프스타일 결합, 패키지 감성, 인플루언서 추천템, GRWM 포맷 등 감각적이고 미적인 키워드에 집중할 것.
-   - 릴스 바이럴, 언박싱, 플랫레이 같은 Instagram 고유 콘텐츠 포맷과 연결된 키워드를 발굴할 것.
-   - skin/face/good 같은 범용 단어는 무조건 배제할 것.
+2. 🚨 배제 대상 (Negative Filter) 필수 적용:
+   - Makeup, Color cosmetics 등 색조 화장품 관련 키워드 철저히 제외.
+   - PR package, Discount code, Link in bio 등 홍보성 단어 배제.
+   - Skin, Face, Beauty 같은 뻔한 범용 단어 배제.
+   - 🚨 뻔한 단어 배제: 'Sunscreen', 'SPF', 'Sunblock' 등 자외선 차단제 단어 자체는 키워드 선정에서 아예 제외하고, 그로 인한 구체적인 피부 변화(효과/불만)나 특정 성분명에만 집중할 것.
 
 [출력 형식]
-- 마크다운 기호 없이 오직 순수한 JSON 배열만 출력할 것.
-- 'keyword'는 원문 영어 그대로, 'summary'는 한국어로 2~3줄 상세 분석.
+- 마크다운 없이 순수 JSON 배열만 출력.
+- 🚨 모든 'keyword'는 반드시 소문자(lowercase)로 통일해서 출력할 것.
+- 'summary'는 이 키워드가 선세럼 마케팅에 왜 중요한지 **존댓말(합쇼체)**로 한국어 2~3줄 분석.
 
 [
   {{
-    "keyword": "영어 키워드명",
+    "keyword": "glass skin",
     "mentions": 카운트숫자,
-    "summary": "이 키워드가 Instagram 비주얼/인플루언서 마케팅 관점에서 왜 핫한지, K-뷰티 전략 시사점을 한국어 2~3줄로 분석"
+    "summary": "한국어 요약 분석 (반드시 존댓말/합쇼체로 작성)"
   }}
 ]""",
 }
@@ -780,7 +776,7 @@ def api_trend_tiktok():
         client = ApifyClient(APIFY_TOKEN)
 
         run_input = {
-            "hashtags": ["sephorahaul", "skincare", "beauty"],
+            "hashtags": ["skincare", "skincareroutine", "glowingskin"],
             "resultsPerPage": 1,
             "proxyConfiguration": {"useApifyProxy": True},
         }
@@ -837,6 +833,7 @@ def api_trend_tiktok():
         raw      = res.choices[0].message.content.strip()
         raw      = raw.replace('```json', '').replace('```', '').strip()
         keywords = json.loads(raw)
+        keywords = sorted(keywords, key=lambda x: x.get('mentions', 0), reverse=True)
 
         return jsonify({
             'success':     True,
@@ -874,7 +871,7 @@ def api_trend_instagram():
         client = ApifyClient(APIFY_TOKEN)
 
         run_input = {
-            'hashtags': ['kbeauty', 'koreanskincare', 'skincareroutine'],
+            'hashtags': ['skincareroutine', 'skincaretips', 'healthyskin'],
             'resultsLimit': 20,
             'proxyConfiguration': {'useApifyProxy': True},
         }
@@ -943,6 +940,7 @@ def api_trend_instagram():
         raw      = res.choices[0].message.content.strip()
         raw      = raw.replace('```json', '').replace('```', '').strip()
         keywords = json.loads(raw)
+        keywords = sorted(keywords, key=lambda x: x.get('mentions', 0), reverse=True)
 
         return jsonify({
             'success':     True,
@@ -982,7 +980,7 @@ def api_trend_all():
         try:
             tt_client = ApifyClient(APIFY_TOKEN)
             tt_run    = tt_client.actor('clockworks/tiktok-scraper').call(run_input={
-                "hashtags": ["sephorahaul", "skincare", "beauty"],
+                "hashtags": ["skincare", "skincareroutine", "glowingskin"],
                 "resultsPerPage": 3,
                 "proxyConfiguration": {"useApifyProxy": True},
             })
@@ -1030,27 +1028,29 @@ def api_trend_all():
         # ── 3. OpenAI 통합 분석 TOP 15 ─────────────────────────────────────
         ai_client = OpenAI(api_key=OPENAI_API_KEY)
 
-        prompt = f"""너는 K-뷰티 및 글로벌 스킨케어 시장 트렌드를 분석하는 수석 데이터 애널리스트이자 마케팅 전략가야.
-다음은 TikTok과 Reddit에서 실시간으로 수집된 미국 K-뷰티 관련 콘텐츠야.
+        prompt = f"""너는 미국 스킨케어 시장을 분석하는 마케팅 전략가야.
 
 [수집 데이터]
 {all_text[:4000]}
 
 [수행 작업 및 분석 가이드라인]
-TikTok 해시태그 빈도 + Reddit 게시글 내용을 합산하여, 현재 미국에서 가장 핫한 K-뷰티 트렌드 키워드 **TOP 15**를 도출해.
+우리는 미국 시장에 '선세럼(Sun Serum)'을 런칭하려고 해. TikTok과 Reddit 데이터를 합산하여 미국에서 가장 핫한 스킨케어/선케어 트렌드 키워드 **TOP 15**를 도출해.
 
 1. 절대적 객관성 유지 (할루시네이션 금지): 오직 제공된 데이터에서만 추출할 것.
-2. 미끼 태그 완전 배제: K-Beauty, skincare, beauty 같은 범용 태그는 절대 선정하지 말 것.
-3. 키워드 그룹핑: 비슷한 의미(예: Sunscreen/SPF/Sunblock)는 하나로 통합할 것.
-4. 플랫폼 출처 표기: TikTok만→"tiktok", Reddit만→"reddit", 둘 다→"both"
+2. 기존 선크림의 불만(White cast, Pilling 등)과 선호하는 텍스처(Lightweight, Glass skin 등)를 최우선으로 도출할 것.
+3. 키워드 그룹핑: 유사어는 하나의 대표 키워드로 통합할 것.
+4. 🚨 배제: Makeup, Color cosmetics 등 색조 단어와 Shipping 등 물류/구매 단어는 철저히 배제할 것.
+5. 🚨 뻔한 단어 배제: 'Sunscreen', 'SPF', 'Sunblock' 등 자외선 차단제 단어 자체는 키워드 선정에서 아예 제외하고, 그로 인한 구체적인 피부 변화(효과/불만)나 특정 성분명에만 집중할 것.
+6. 플랫폼 출처 표기: TikTok만→"tiktok", Reddit만→"reddit", 둘 다→"both"
 
 [출력 형식 - 순수 JSON 배열만]
+- 🚨 모든 'keyword'는 반드시 첫 글자를 대문자로 시작하는 Title Case 형식(예: Glass Skin, Vitamin C, Hydrating)으로 통일할 것.
 [
   {{
-    "keyword": "영어 키워드",
+    "keyword": "Glass Skin",
     "mentions": 숫자,
     "source": "tiktok 또는 reddit 또는 both",
-    "summary": "이 키워드가 현재 미국 K-뷰티 시장에서 왜 핫한지 한국어 2~3줄 분석"
+    "summary": "이 키워드가 미국 스킨케어/선케어 시장에서 왜 핫한지, 선세럼 마케팅 관점에서 존댓말(합쇼체)로 한국어 2~3줄 분석"
   }}
 ]"""
 
@@ -1063,6 +1063,7 @@ TikTok 해시태그 빈도 + Reddit 게시글 내용을 합산하여, 현재 미
 
         raw      = res.choices[0].message.content.strip().replace('```json','').replace('```','').strip()
         keywords = json.loads(raw)
+        keywords = sorted(keywords, key=lambda x: int(x.get('mentions', 0) if x.get('mentions') else 0), reverse=True)
 
         return jsonify({
             'success':     True,
